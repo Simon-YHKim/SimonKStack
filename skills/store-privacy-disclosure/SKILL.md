@@ -1,6 +1,11 @@
 ---
 name: store-privacy-disclosure
-description: "스토어 개인정보 공시(Apple App Privacy 라벨 + Google Play Data Safety + ATT 카피)를 데이터플로우 인벤토리에서 자동 생성하는 skill. 트리거 \"App Privacy 라벨\", \"Data Safety\", \"개인정보 공시\", \"ATT 카피\", \"NSUserTrackingUsageDescription\", \"Nutrition Label\", \"data safety 설문\", /store-privacy-disclosure. data-flow-mapper 인벤토리(data-flow.md)를 입력으로 Apple Privacy Nutrition Label과 Google Data Safety 설문을 자동으로 채우고, ATT 프리프롬프트 + NSUserTrackingUsageDescription 카피를 생성한다. 코드에서 관측된 수집과 라벨 선언이 어긋나면(선언↔수집 불일치) 스토어 리젝 사유로 강제 경고한다. 선언이 아니라 인벤토리의 코드 근거를 단일 소스로 삼는다."
+description: >-
+  Use when preparing "App Privacy 라벨", "Data Safety", "ATT 카피",
+  "NSUserTrackingUsageDescription", or /store-privacy-disclosure from a
+  data-flow-mapper inventory. Produces Apple
+  privacy labels, Google Play Data Safety answers and ATT copy, with code-to-
+  declaration mismatches flagged. Does not submit store forms.
 allowed-tools: Read, Grep, Write, AskUserQuestion
 version: 1.0.0
 author: simon-stack

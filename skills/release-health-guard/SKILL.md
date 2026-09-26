@@ -1,6 +1,10 @@
 ---
 name: release-health-guard
-description: "앱 릴리즈 헬스 게이트 — 트리거 \"크래시 모니터\", \"릴리즈 헬스\", \"crash-free\", \"롤아웃 차단\", \"ANR 점검\", \"top crash 비교\", \"staged rollout 멈춰\", \"crash monitor\", \"release health\", \"block rollout\", /release-health-guard. EAS 빌드별 Sentry/Crashlytics 의 crash-free% · ANR% · top crash 를 읽어 직전 릴리즈와 diff 하고, 임계 하회 시 staged rollout 중단/차단 + 알림을 만든다. crash-free% 가 모바일 리텐션을 직접 깎는 핵심 지표라는 전제로 OOM·ANR·네이티브 크래시 패턴 체크리스트를 동반한다. 신규 앱 출시는 store-launcher, 사후 모니터는 canary, 사고 대응은 incident-runbook 으로 라우팅."
+description: >-
+  Use when checking "릴리즈 헬스", "crash-free", "ANR 점검", "block rollout",
+  or /release-health-guard for a mobile release. Produces a sample-aware
+  comparison of current and previous Sentry/Crashlytics metrics, top crashes,
+  and a PASS/WARN/BLOCK/HOLD recommendation. Does not control rollout or send alerts.
 allowed-tools: Read, Write, Bash, Grep, WebFetch, AskUserQuestion
 version: 1.0.0
 author: simon-stack
@@ -68,7 +72,7 @@ sessions % 와 users % 는 같이 본다. users 는 높은데 sessions 가 낮�
 - Sentry: `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT`. Release Health 세션 데이터는 Sentry API 의 sessions endpoint 에서 릴리즈별로 조회.
 - Crashlytics: 콘솔/ BigQuery export. CI 자동화는 Crashlytics → BigQuery 연동 후 쿼리하는 경로가 안정적.
 - WebFetch 는 도구 최신 API 경로·필드명 확인용으로만 쓰고, 시크릿은 절대 URL/헤더에 노출하지 않는다.
-- 수집 결과는 `templates/release-health.template.md` 의 표에 채운다.
+- 수집 결과는 `templates/release-health.template.md` 를 새 판정 기록에 복사해 채운다. 기존 기록은 덮어쓰지 않는다.
 
 ### 3. diff 와 판정 (scripts/eval-release-health.sh)
 

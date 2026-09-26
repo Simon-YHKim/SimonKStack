@@ -1,6 +1,11 @@
 ---
 name: data-flow-mapper
-description: "개인정보(PII) 데이터플로우 인벤토리와 합법근거 맵을 만드는 skill. 트리거 \"개인정보 흐름 정리\", \"PII 맵\", \"데이터 인벤토리\", \"수집 항목 정리\", \"privacy 라벨 준비\", \"국외이전 점검\", \"data inventory\", \"privacy label\", /data-flow-mapper. 코드를 스캔(SDK init·네트워크 콜·DB 컬럼·env 키)해서 데이터타입×목적×법적근거×처리자×저장지역×보존기간 표를 산출하고, 동의 없는 수집·국외이전 같은 위험을 플래그한다. 이 인벤토리는 Apple Privacy Nutrition Label·Google Data Safety·개인정보처리방침·DSAR 응답의 단일 상류 소스다."
+description: >-
+  Use when mapping an app's personal-data flows for "개인정보 흐름 정리", "PII 맵",
+  "data inventory", "privacy label", "국외이전 점검", or /data-flow-mapper.
+  Produces an
+  evidence-labeled inventory of data type, purpose, legal basis, processor,
+  storage region and retention; flags consent and cross-border transfer gaps.
 allowed-tools: Read, Grep, Glob, Write, AskUserQuestion
 version: 1.0.0
 author: simon-stack

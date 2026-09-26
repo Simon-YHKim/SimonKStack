@@ -1,6 +1,10 @@
 ---
 name: spec
-description: "기능 스펙·요구사항을 인터뷰로 끌어내 spec.md 를 산출할 때 사용 — 트리거 \"스펙 정리\", \"기능 명세\", \"PRD 초안\", \"요구사항 정리\", \"이 기능 스펙 잡아줘\", \"명세서 만들어줘\", \"draft a spec\", \"write a PRD\", \"requirements doc\", 또는 /spec. 문제·대상 사용자·성공 기준·범위(in/out)·엣지 케이스·수용 기준(Given-When-Then)·의존·리스크를 한 번에 하나씩 묻는 인터뷰로 메우고, 빈칸을 추정으로 채우지 않으며, 최종적으로 docs/specs/<slug>/spec.md 한 장으로 정리한다. dev-orchestrator 0단계(진단)로 핸드오프해 구현에 넘긴다. 새 앱 전체 기획은 app-dev-orchestrator, 완성된 스펙 깨부수기는 grill-me 로 분리한다."
+description: >-
+  Use when turning "기능 명세", "PRD 초안", "요구사항 정리", "draft a spec",
+  or /spec into a buildable feature scope. Produces docs/specs/<slug>/spec.md
+  with user, problem, success criteria, in/out scope, acceptance tests,
+  dependencies and open decisions; asks rather than inventing missing answers.
 allowed-tools: Read, Write, Edit, AskUserQuestion
 version: 1.0.0
 author: simon-stack
