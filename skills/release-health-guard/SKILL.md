@@ -1,8 +1,8 @@
 ---
 name: release-health-guard
 description: >-
-  Use when checking "릴리즈 헬스", "crash-free", "ANR 점검", "block rollout",
-  or /release-health-guard for a mobile release. Produces a sample-aware
+  Use when checking "크래시 모니터", "릴리즈 헬스", "crash-free", "ANR 점검",
+  "block rollout", or /release-health-guard for a mobile release. Produces a sample-aware
   comparison of current and previous Sentry/Crashlytics metrics, top crashes,
   and a PASS/WARN/BLOCK/HOLD recommendation. Does not control rollout or send alerts.
 allowed-tools: Read, Write, Bash, Grep, WebFetch, AskUserQuestion

@@ -1,7 +1,7 @@
 ---
 name: store-privacy-disclosure
 description: >-
-  Use when preparing "App Privacy 라벨", "Data Safety", "ATT 카피",
+  Use when preparing "개인정보 공시", "App Privacy 라벨", "Data Safety", "ATT 카피",
   "NSUserTrackingUsageDescription", or /store-privacy-disclosure from a
   data-flow-mapper inventory. Produces Apple
   privacy labels, Google Play Data Safety answers and ATT copy, with code-to-

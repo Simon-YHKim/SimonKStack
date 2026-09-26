@@ -1,7 +1,7 @@
 ---
 name: spec
 description: >-
-  Use when turning "기능 명세", "PRD 초안", "요구사항 정리", "draft a spec",
+  Use when turning "스펙 정리", "기능 명세", "PRD 초안", "요구사항 정리", "draft a spec",
   or /spec into a buildable feature scope. Produces docs/specs/<slug>/spec.md
   with user, problem, success criteria, in/out scope, acceptance tests,
   dependencies and open decisions; asks rather than inventing missing answers.

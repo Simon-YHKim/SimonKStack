@@ -1,8 +1,9 @@
 ---
 name: data-flow-mapper
 description: >-
-  Use when mapping an app's personal-data flows for "개인정보 흐름 정리", "PII 맵",
-  "data inventory", "privacy label", "국외이전 점검", or /data-flow-mapper.
+  Use when mapping an app's personal-data flows for "개인정보 흐름 정리",
+  "수집 항목 정리", "PII 맵", "data inventory", "privacy label",
+  "국외이전 점검", or /data-flow-mapper.
   Produces an
   evidence-labeled inventory of data type, purpose, legal basis, processor,
   storage region and retention; flags consent and cross-border transfer gaps.
