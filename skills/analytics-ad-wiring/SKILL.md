@@ -27,8 +27,8 @@ author: simon-stack
 | 측정 도구 선택 (GA4/Clarity/PostHog/Firebase) | `analytics-integrator` | 먼저 호출 |
 | 이벤트 택소노미 (`object_action`) | `analytics-integrator` | 먼저 호출 |
 | 광고 SDK·배치 전략 | `ad-monetization` | 먼저 호출 |
-| 동의 게이트 (consent state) | `consent-manager` | 게이트가 없으면 no-op consent 헬퍼를 임시 생성하되 TODO 표기 |
-| 수집 항목 등록부 | `data-flow-mapper` | 수집 필드를 등록부에 추가 (없으면 TODO) |
+| 동의 게이트 (consent state) | `consent-manager` | 실제 동의 판독기가 없으면 배선을 미완료로 보고 SDK 로드·발화를 활성화하지 않음 |
+| 수집 항목 등록부 | `data-flow-mapper` | 등록부가 없으면 실제 수집을 중단하고 등록부를 먼저 준비 |
 
 ## 4대 불변식 (강제 — 위반 시 배선 중단)
 
@@ -71,7 +71,9 @@ author: simon-stack
 
 ### 4. consent-gated wrapper 작성
 - `templates/consent-gated-wrapper.ts` 로 모든 발화를 동의 게이트 뒤로 통과.
-- 동의 전 큐잉 → 동의 후 flush (또는 단순 drop). drop 기본, 큐잉은 명시 요청 시.
+- 앱의 실제 `consent-manager` 판독기와 `getTracker`를 `createConsentGatedTracker(readAnalyticsConsent, getTracker)`에 주입한다. 가짜 상수 판독기로 연결 완료를 주장하지 않는다.
+- 동의 저장소 갱신 **후** `onConsentGranted()` 또는 `onConsentRevoked()`를 호출한다. 부여 콜백도 현재 동의 상태를 다시 확인하며, 철회 시 SDK의 opt-out/reset도 연결한다.
+- 동의 전 발화는 기본 drop. 큐잉은 명시 요청 시에만 `{ queueBeforeConsent: true }`로 켜고, 철회 시 폐기한다.
 
 ### 5. 플랫폼별 배선
 - 웹: `templates/web-snippet.html` (gtag + Clarity + AdSense) 동적 주입.
@@ -85,6 +87,7 @@ author: simon-stack
 
 ### 8. 검증
 - `bash scripts/verify-wiring.sh [src-dir]` 실행 → 4대 불변식 정적 통과 확인.
+- `node --test skills/analytics-ad-wiring/tests/consent-gated-wrapper.test.mjs`로 동의 상태·철회·지연 콜백 회귀 테스트를 실행한다.
 - 런타임: env 비운 상태로 부팅 → 앱이 죽지 않는지(I2), 동의 토글 → 발화 on/off(I1) 확인.
 
 ## 키 형식 빠른 참조

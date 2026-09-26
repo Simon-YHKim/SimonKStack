@@ -8,3 +8,12 @@
 SimonKCore 권장 동반 설치 (공유 인프라). 없으면 일부 기능 제한.
 
 _기존 Simon-YHKim/SimonK-stack 레포로 머지 예정. 현재는 로컬 프리뷰._
+
+## 로컬 검증
+
+```bash
+node .github/validate.mjs
+node --test skills/analytics-ad-wiring/tests/consent-gated-wrapper.test.mjs
+```
+
+동의 게이트 테스트는 TypeScript 타입 제거를 지원하는 Node.js 24에서 실행합니다. 분석·광고 배선 템플릿은 앱의 실제 동의 상태 판독기를 주입해야 활성화됩니다. 판독기가 없으면 배선을 완료로 간주하지 않습니다.

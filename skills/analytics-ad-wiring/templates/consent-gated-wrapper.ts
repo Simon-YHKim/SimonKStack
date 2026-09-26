@@ -1,63 +1,86 @@
 /**
- * consent-gated-wrapper.ts — 불변식 I1 (동의 게이트) 패턴.
+ * Consent gate pattern. The host app must pass its real consent-manager reader;
+ * this template does not invent a consent state or initialize an SDK itself.
  *
- * 모든 트래커/광고 발화는 consent-manager 의 동의 상태가 'granted' 일 때만 통과한다.
- * 동의 전에는 SDK 로드/init 자체를 미루고, 발화는 drop(기본) 또는 queue(명시 요청 시) 한다.
+ * Example after the app has a consent manager:
+ *   const gated = createConsentGatedTracker(readAnalyticsConsent, getTracker);
+ *   // On a consent change, call gated.onConsentGranted() or
+ *   // gated.onConsentRevoked() only after the consent store has updated.
  *
- * 이 래퍼는 consent 상태를 "읽기만" 한다. 상태 관리는 consent-manager 소관.
+ * A missing, invalid, or throwing reader is treated as denied. Before consent
+ * is granted, the tracker provider is never called.
  */
 
-import { getTracker } from "./failopen-init";
-// 택소노미 단일 소스 (I3). 인라인 이벤트명 금지 — 반드시 상수에서 import.
-// import { EVENTS } from "@/lib/analytics/taxonomy";
-
-/** consent-manager 가 노출하는 상태 형태(예시). 실제 import 로 교체. */
 type ConsentState = "granted" | "denied" | "unknown";
+type Tracker = {
+  track: (event: string, props?: Record<string, unknown>) => void;
+};
+type TrackedEvent = { event: string; props?: Record<string, unknown> };
 
-/** consent-manager 연결 지점. 실제 구현으로 교체. */
-function getAnalyticsConsent(): ConsentState {
-  try {
-    // 예: return useConsentStore.getState().analytics;
-    // consent-manager 미설치 시 임시 no-op: 안전을 위해 'denied' 기본.
-    return "denied"; // TODO: consent-manager 연결
-  } catch {
-    return "denied"; // 읽기 실패 시 보수적으로 차단
-  }
-}
+/**
+ * The host app must supply its current consent state and lazy tracker provider.
+ * Queue only when explicitly requested; dropping before consent is the default.
+ */
+export function createConsentGatedTracker(
+  readConsent: () => ConsentState,
+  getTracker: () => Tracker,
+  options: { queueBeforeConsent?: boolean } = {},
+) {
+  const queueBeforeConsent = options.queueBeforeConsent === true;
+  const pending: TrackedEvent[] = [];
 
-const QUEUE_MODE = false; // 기본 drop. true 면 동의 전 이벤트를 큐잉 후 flush.
-const pending: Array<{ event: string; props?: Record<string, unknown> }> = [];
-
-/** 동의 게이트를 통과한 track. 미동의 시 발화하지 않는다. */
-export function trackGated(event: string, props?: Record<string, unknown>): void {
-  const consent = getAnalyticsConsent();
-
-  if (consent !== "granted") {
-    if (QUEUE_MODE && consent === "unknown") {
-      pending.push({ event, props }); // 미정 상태만 큐잉
+  function currentConsent(): ConsentState {
+    try {
+      const state = readConsent();
+      return state === "granted" || state === "unknown" ? state : "denied";
+    } catch {
+      return "denied";
     }
-    return; // denied/unknown → drop. 절대 발화 안 함.
   }
 
-  // 동의 됨 → fail-open tracker 로 위임 (I2).
-  getTracker().track(event, props);
-}
+  function emit(event: string, props?: Record<string, unknown>): void {
+    try {
+      getTracker().track(event, props);
+    } catch {
+      // Analytics is optional: a failed SDK must not break the app.
+    }
+  }
 
-/** 동의 부여 직후 호출 — 큐잉된 이벤트 flush (QUEUE_MODE 시). */
-export function onConsentGranted(): void {
-  if (!QUEUE_MODE) {
+  function trackGated(event: string, props?: Record<string, unknown>): void {
+    const consent = currentConsent();
+    if (consent !== "granted") {
+      if (consent === "denied") pending.length = 0;
+      if (queueBeforeConsent && consent === "unknown") {
+        // Bound optional in-memory queue growth while consent remains unknown.
+        if (pending.length >= 100) pending.shift();
+        pending.push({ event, props });
+      }
+      return;
+    }
+    emit(event, props);
+  }
+
+  function onConsentGranted(): void {
+    if (!queueBeforeConsent) {
+      pending.length = 0;
+      return;
+    }
+    while (pending.length) {
+      const consent = currentConsent();
+      if (consent !== "granted") {
+        if (consent === "denied") pending.length = 0;
+        return;
+      }
+      const item = pending.shift();
+      if (!item) return;
+      emit(item.event, item.props);
+    }
+  }
+
+  function onConsentRevoked(): void {
     pending.length = 0;
-    return;
+    // The host must also call its SDK opt-out/reset where the SDK supports it.
   }
-  const t = getTracker();
-  while (pending.length) {
-    const item = pending.shift()!;
-    t.track(item.event, item.props);
-  }
-}
 
-/** 동의 철회 — 큐 비우고 이후 발화 차단(게이트가 이미 막지만 명시적으로). */
-export function onConsentRevoked(): void {
-  pending.length = 0;
-  // 필요 시 SDK opt-out 호출 (예: gtag('consent','update',{analytics_storage:'denied'}))
+  return { trackGated, onConsentGranted, onConsentRevoked };
 }

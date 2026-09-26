@@ -1,10 +1,11 @@
 ---
 name: skstack
+version: 0.1.0
 description: >
-  SimonKStack 오케스트레이터 — 제품/서비스 빌드의 단일 진입점. 트리거 "앱 만들자", "기능 구현", "버그 고쳐줘",
-  "리팩터", "배포", "보안 점검", "QA", "skstack", 또는 /skstack. 사용자 의도를 러프하게 진단한 뒤 적절한
-  빌드 스킬/하위 오케스트레이터로 라우팅하고, 단계마다 사용자와 상호작용하며 반복 디벨롭한다. Plan 모드 우선,
-  테스트·보안 게이트를 건너뛰지 않는다.
+  Use when building, fixing, testing, securing, or deploying a product via
+  "/skstack" ("앱 만들자", "기능 구현", "버그 고쳐줘", "배포", "QA").
+  Produces a scoped build plan, routes to the appropriate skills, and reports
+  tested results with security gates and user checkpoints.
 allowed-tools:
   - Read
   - Write
