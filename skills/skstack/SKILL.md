@@ -17,9 +17,9 @@ allowed-tools:
   - Skill
 ---
 
-# /skstack — SimonKStack 오케스트레이터
+# /skstack — /vibe 아래의 제품 빌드 절차
 
-제품/서비스 빌드의 진입점. **Plan 우선, 게이트 안 건너뛴다.** 의도를 좁히고, 적절한 파이프라인으로 라우팅하고, 단계마다 디벨롭한다.
+제품/서비스 빌드의 전문 절차. **/vibe가 유일한 오케스트레이션 소유자**이며 이 스킬은 그 안에서 계획·구현 단계를 제공한다. `/skstack` 직접 호출도 같은 세션의 /vibe 계약을 먼저 채택한다. 기존 run/plan/budget/approval을 재생성하거나 별도 모델·Bot 라우터를 시작하지 않는다. /vibe가 없으면 자율 실행 대신 제한된 수동 계획만 제시한다. **Plan 우선, 게이트 안 건너뛴다.**
 
 ## 0. SimonKCore 감지 (graceful degrade)
 - `agent-delegate`, `model-router`, `simon-worktree`, `grill-me`, `checkpoint`, `simon-instincts` 설치 확인.
