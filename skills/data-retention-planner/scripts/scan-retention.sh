@@ -4,7 +4,7 @@
 # Surfaces scanned: timestamp/lifecycle columns, existing TTL/cron config,
 # backup config, object-storage lifecycle rules, and hard-delete call sites.
 #
-# Usage: bash skills/data-retention-planner/scripts/scan-retention.sh [project-root]
+# Usage: bash "<observed-absolute-data-retention-planner-dir>/scripts/scan-retention.sh" "/absolute/path/to/project"
 # Default project-root: current directory
 #
 # Output: candidate hits to stderr, grouped by surface. This is an INDEX of

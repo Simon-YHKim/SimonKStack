@@ -71,8 +71,12 @@ author: simon-stack
 - 스케줄러? (Supabase pg_cron / GitHub Actions cron / Cloud Scheduler / Vercel Cron)
 
 ### 2. 현황 스캔 (결정론 스크립트)
-```
-bash skills/data-retention-planner/scripts/scan-retention.sh [project-root]
+현재 로드한 `data-retention-planner/SKILL.md`의 부모 디렉터리 절대경로를
+`SKILL_DIR`에 지정한다. 프로젝트의 `skills/` 폴더를 가정하지 않는다.
+
+```bash
+SKILL_DIR="<observed-absolute-data-retention-planner-dir>"
+bash "$SKILL_DIR/scripts/scan-retention.sh" "/absolute/path/to/project"
 ```
 - 타임스탬프 컬럼(`created_at`/`deleted_at`/`expires_at`), TTL/cron 설정, 백업 설정, 객체스토리지 lifecycle 후보를 **인덱싱**(자동 분류 아님 — 사람이 클래스에 매핑).
 
@@ -80,8 +84,9 @@ bash skills/data-retention-planner/scripts/scan-retention.sh [project-root]
 - `templates/retention-classes.json` 를 프로젝트에 맞게 채운다. 각 클래스: `retentionDays`, `graceDays`, `basis`, `trigger`, `table`, `timestampColumn`, `softDelete`(bool), `legalHold`(bool).
 
 ### 4. purge 계획 생성 (결정론 스크립트)
-```
-node skills/data-retention-planner/scripts/gen-purge-plan.mjs <classes.json> [--out <dir>]
+```bash
+SKILL_DIR="<observed-absolute-data-retention-planner-dir>"
+node "$SKILL_DIR/scripts/gen-purge-plan.mjs" "/absolute/path/to/classes.json"
 ```
 - classes.json → 클래스별 **cron 표현식 + soft/hard DELETE SQL 스켈레톤 + 감사로그 INSERT** 를 생성. 입력 같으면 출력 같음(stub 아님, 실제 로직).
 - `legalHold:true` 클래스는 hard-delete SQL 을 생성하되 **법정기간 만료 조건**을 강제로 끼운다(즉시 삭제 SQL 생성 안 함).

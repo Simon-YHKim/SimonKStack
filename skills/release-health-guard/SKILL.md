@@ -76,9 +76,13 @@ sessions % 와 users % 는 같이 본다. users 는 높은데 sessions 가 낮�
 
 ### 3. diff 와 판정 (scripts/eval-release-health.sh)
 
+현재 로드한 `release-health-guard/SKILL.md`의 부모 디렉터리 절대경로를
+`SKILL_DIR`에 지정한다. 프로젝트의 `skills/` 폴더를 가정하지 않는다.
+
 ```bash
 # 현재/직전 릴리즈 지표를 JSON 으로 만들어 게이트 평가
-bash skills/release-health-guard/scripts/eval-release-health.sh \
+SKILL_DIR="<observed-absolute-release-health-guard-dir>"
+bash "$SKILL_DIR/scripts/eval-release-health.sh" \
   --current  '{"version":"1.4.0","crash_free_sessions":99.2,"crash_free_users":99.6,"anr_rate":0.30,"sessions":8200}' \
   --previous '{"version":"1.3.0","crash_free_sessions":99.7,"crash_free_users":99.8,"anr_rate":0.22,"sessions":15400}' \
   --min-sessions 1000
