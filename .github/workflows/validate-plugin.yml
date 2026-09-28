@@ -10,4 +10,6 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '24' }
       - run: node .github/validate.mjs
+      - run: node .github/validate-evals.mjs
+      - run: node --test .github/validate-evals.test.mjs
       - run: node --test skills/analytics-ad-wiring/tests/consent-gated-wrapper.test.mjs
